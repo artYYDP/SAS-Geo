@@ -9,7 +9,7 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 
 Esses repositório tem como função ajudar os programadores e analistas SAS a execução do Mapa Coroplético de um maneira simples e rápida, que possa ser replicada em vários projetos.
 
-## Código
+## Códigos
 <details>
 <summary>CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE)</summary>
 	
