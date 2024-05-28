@@ -55,9 +55,10 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 /* Autor: Arthur Diego Pereira */
 /* Contribuição: Geiziane Silva de Oliveira */
 /*  */
-/* NÃO RETIRE OS CRÉDITOS POR FAVOR */
+/* FAVOR NÃO REMOVER OS CRÉDITOS */
 /*  */
-/* Fazer o Download do Arquivo GeoJSON do Github */
+
+/* 1. Fazer o Download do Arquivo GeoJSON do Github */
 filename mapa temp;
 
 proc http
@@ -66,28 +67,28 @@ proc http
 	out=mapa;
 run;
 
-/* Ler o Arquivo GeoJSON usando a Biblioteca JSON */
+/* 2. Ler o Arquivo GeoJSON usando a Biblioteca JSON */
 libname jsonlib json fileref=mapa;
 
-/* Examinar a Estrutura do GeoJSON */
+/* 3. Examinar a Estrutura do GeoJSON */
 proc contents data=jsonlib._all_;
 run;
 
-/* Unir as tabelas */
+/* 4. Unir as tabelas */
 data map_data;
     merge jsonlib.features_properties 
           jsonlib.features_geometry (keep=ordinal_features ordinal_geometry type);
     by ordinal_features;
 run;
 
-/* Preparar os dados para o gráfico GMAP */
+/* 5. Preparar os dados para o gráfico GMAP */
 data map_data;
     merge map_data
           jsonlib.geometry_coordinates;
     by ordinal_geometry;
 run;
 
-/* Preparar os dados para a Plotagem */
+/* 6. Preparar os dados para a Plotagem */
 data plot_data (drop=element1 element2);
     set map_data;
     x = element1;
@@ -96,42 +97,32 @@ data plot_data (drop=element1 element2);
     output;
 run;
 
-/* Plotar o gráfico */
-proc gmap data=plot_data map=plot_data;
-    id name;
-    choro name / nolegend levels=1;
-run;
-
-/* Adicionar sequencia */
+/* 7. Adicionar sequencia */
 data plot_data;
 set plot_data;
 seqno=_n_;
 run;
 
+/* 8. Macro para Carregar Dados no CAS e Promover a Tabela */
 %macro sas_load_data_cas(incaslib=,casdata=,data=,outcaslib=, casout=);
-/* Deleta a tabela da memória */
+
+/* 8.1. Deleta a tabela da memória */
 proc casutil;
 droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
 run;
 
-/* Carrega tabela no CAS*/
+/* 8.2. Carrega tabela no CAS*/
 proc casutil;
   load data=&data. casout="&casout." outcaslib=&outcaslib. replace;
 quit;
 
-/* Salva uma copia da tabela na memória [OPCIONAL]  */
-/* proc casutil ; */
-/* save  casdata = "&casdata." incaslib = "&incaslib." replace */
-/* casout="&casout..sashdat" outcaslib="&outcaslib."; */
-/* quit; */
-
-/* Promove a tabela (disponível para todos os usuário acesso ao servidor) */
+/* 8.3. Promove a tabela (disponível para todos os usuário acesso ao servidor) */
 proc casutil;
 promote incaslib = "&outcaslib." casdata = "&casdata."
 outcaslib = "&outcaslib." casout = "&casout.";
 quit;
 %mend sas_load_data_cas;
-%sas_load_data_cas(incaslib=Public,casdata=MAPA_ES,data=geo.regions_shapefile,outcaslib=Public, casout=MAPA_ES)
+%sas_load_data_cas(incaslib=Public,casdata=MAPA,data=geo.regions_shapefile,outcaslib=Public, casout=MAPA)
 ```
 </details>
 
@@ -153,11 +144,99 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 <summary>Clique aqui para visualizar o código</summary>
 	
 ```sas
-/* Em construção */
+/* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO SHAPEFILE */
+/* Versão: 3.5 */
+/* Status: Finalizado */
+/* Autor: Geiziane Silva de Oliveira */
+/* Contribuição: Arthur Diego Pereira */
+/*  */
+/* FAVOR NÃO REMOVER OS CRÉDITOS */
+/*  */
+
+/* 1. Inicia a sessão CAS */
+cas minhasessao sessopts=(caslib=public locale="pt_BR");
+
+/* 2. Lista todas as CASLIB */
+caslib _all_ list;
+caslib _all_ assign;
+options casdatalimit=all;
+
+/* 3. Define macros para os caminhos e nomes dos arquivos */
+%let filepath=/CASLIB_XYZ/; /* Substituir o caslib onde você colocou o arquivo */
+%let shapename=ES_Municipios_2022.shp;
+%let outcaslib=Public;
+%let outcasdata=SAS_MAP;
+
+/* 4. Remove a tabela CAS existente, se houver */
+proc casutil;
+droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+run;
+
+/* 5. Examina o conteúdo do Shapefile */
+%SHPCNTNT(SHAPEFILEPATH=&filepath.&shapename.); /* Analise o nome da coluna com o identificador único de cidade. Nesse caso é o CD_MUN */
+
+/* 6. Importa o Shapefile para a tabela CAS */
+%SHPIMPRT(shapefilepath=&filepath.&shapename., 
+	id=CD_MUN, /* Coloque aqui o id da etapa anterior (CD_MUN) */
+	outtable=&outcasdata., 
+	cashost=&_CASHOST_., 
+	casport=&_CASPORT_., 
+	caslib='Public',
+	reduce=1); /* A opção reduce=1 é utilizada para reduzir a complexidade dos dados geográficos importados */
+
+/* 7. Reconecta à sessão CAS */
+options sessref=minhasessao;
+cas minhasessao reconnect;
+
+/* 8. Filtra e prepara os dados */
+data &outcaslib..&outcasdata._ (copies=0);
+	/* Usamos o segment=1 para filtrar somente polígonos */
+	/* Usamos o density>4 para filtrar a densidade de detalhes nos mapas */
+	set &outcaslib..&outcasdata. (where = (segment=1 and density<4));
+run;
+
+/* 9. Remove a tabela temporária e promove a tabela final */
+proc casutil;
+droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+run;
+
+proc casutil;
+promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
+run;
 ```
 </details>
 
-## Passo-a-passo (Em Construção)
+## 🐢 Passo-a-passo 
+
+    1. Faça o login no SAS® Viya no seu ambiente.
+    2. Vá até a ferramenta SAS® Studio - Develop SAS Code.
+    3. Abra um novo SAS Program.
+    [GJ_01.png]
+    4. Copie o código que deseja utilizar com os parâmetros já definidos e cole no programa.
+    [GJ_02.png]
+    5. Defina o nome da tabela e o local onde será disponibilizada no final do arquivo. No meu caso eu chamarei a tabela de ```MAPA``` na CASLIB ```Public```.
+    [GJ_03.png]
+    6. Salve o seu código.
+    [GJ_04.png]
+    7. Execute todo o seu código clicando em ```run```.
+    [GJ_05.png]
+    8. Vá agora até a ferramenta SAS® Visual Analytics - Explorar e visualizar.
+    9. Para efeito de teste, usaremos a própria tabela que criamos, mas você pode usar na tabela de negócios. Certifique-se que a sua tabela contenha o código do município de acordo com o IBGE.
+    10. Duplique a coluna ```id``` e altere a classificação para Geografia.
+    [GJ_06.png]
+    [GJ_07.png]
+    11. Na nova tela, coloque os mesmos parâmetros na _print_ abaixo.
+    [GJ_08.png]
+    [GJ_09.png]
+    [GJ_10.png]
+    [GJ_11.png]
+    12. Ao terminar todos os parâmetros, vá em *Objetos* e arraste a *Região geográfica* para a tela gráfica.
+    [GJ_12.png]
+    13. Em *Atribuir dados*, selecione em *Geografia* o mapa que você criou nos passos anteriores.
+    [GJ_13.png]
+    [GJ_14.png]
+    14. Se você executou todos os passos corretamente, você deve visualizar o mapa com as regiões plotadas.
+    [GJ_15.png]
 
 ## 📷 Screenshots
 
@@ -179,4 +258,3 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
  - [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
  - [GeoJSON](https://geojson.org/)
  - [What is a shapefile?](https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm)
-
