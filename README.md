@@ -160,6 +160,6 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 ## 📗 Referência
 
  - [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
- - [GeoJSON](https://pt.wikipedia.org/wiki/GeoJSON)
- - [Shapefile](https://pt.wikipedia.org/wiki/Shapefile)
+ - [GeoJSON](https://geojson.org/)
+ - [What is a shapefile?](https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm)
 
