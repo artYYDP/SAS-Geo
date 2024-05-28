@@ -71,4 +71,4 @@ promote incaslib = "&outcaslib." casdata = "&casdata."
 outcaslib = "&outcaslib." casout = "&casout.";
 quit;
 %mend sas_load_data_cas;
-%sas_load_data_cas(incaslib=Public,casdata=MAPA,data=geo.regions_shapefile,outcaslib=Public, casout=MAPA)
+%sas_load_data_cas(incaslib=Public,casdata=MAPA,data=plot_mapa,outcaslib=Public, casout=MAPA)

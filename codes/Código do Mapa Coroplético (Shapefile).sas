@@ -16,7 +16,7 @@ caslib _all_ assign;
 options casdatalimit=all;
 
 /* 3. Define macros para os caminhos e nomes dos arquivos */
-%let filepath=/home/adpereira.vert/Geo/; /* Substituir o caslib que eles passarem no chamado  */
+%let filepath=/CASLIB_XYZ; /* Substituir pela CASLIB que tem o arquivo shapefile  */
 %let shapename=ES_Municipios_2022.shp;
 %let outcaslib=Public;
 %let outcasdata=SAS_MAP;
