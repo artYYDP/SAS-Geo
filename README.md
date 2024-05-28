@@ -206,7 +206,7 @@ run;
 ```
 </details>
 
-## 🐢 Passo-a-passo 
+## 🐢 Passo a passo 
 
     1. Faça o login no SAS® Viya no seu ambiente.
     2. Vá até a ferramenta SAS® Studio - Develop SAS Code.
