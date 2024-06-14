@@ -145,7 +145,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 	
 ```sas
 /* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO SHAPEFILE */
-/* Versão: 3.5 */
+/* Versão: 3.6 */
 /* Status: Finalizado */
 /* Autor: Geiziane Silva de Oliveira */
 /* Contribuição: Arthur Diego Pereira */
@@ -154,7 +154,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 /*  */
 
 /* 1. Inicia a sessão CAS */
-cas minhasessao sessopts=(caslib=public locale="pt_BR");
+cas casconexao sessopts=(caslib=Public locale="pt_BR");
 
 /* 2. Lista todas as CASLIB */
 caslib _all_ list;
@@ -162,10 +162,10 @@ caslib _all_ assign;
 options casdatalimit=all;
 
 /* 3. Define macros para os caminhos e nomes dos arquivos */
-%let filepath=/CASLIB_XYZ/; /* Substituir o caslib onde você colocou o arquivo */
-%let shapename=ES_Municipios_2022.shp;
-%let outcaslib=Public;
-%let outcasdata=SAS_MAP;
+%let filepath=/sasdata/CASLIBS/GEO/BR/; /* Selecione a CASLIB onde você colocou o Shapefile. */
+%let shapename=BR_Municipios_2022.shp; /* Poderíamos selecionar somente o estado aqui, mas conseguimos fazer bom o shapefile do mapa completo também. */
+%let outcaslib=Public; /* Selecione a CASLIB que deseja salvar a sua consulta ao mapa. Nesse caso, deixaremos na Public */
+%let outcasdata=SAS_MAP_RJ; /* Recomendo utilizar a final UF, caso seja em Estado. Nesse caso, faremos do mapa do Rio de Janeiro. */
 
 /* 4. Remove a tabela CAS existente, se houver */
 proc casutil;
@@ -174,6 +174,9 @@ run;
 
 /* 5. Examina o conteúdo do Shapefile */
 %SHPCNTNT(SHAPEFILEPATH=&filepath.&shapename.); /* Analise o nome da coluna com o identificador único de cidade. Nesse caso é o CD_MUN */
+
+/* Observação: se você estiver usando os dados do IBGE, sempre será através desse identificador 'CD_MUN'. */
+/* Caso você esteja usando outra fonte, certifique-se qual é o identificador base. */
 
 /* 6. Importa o Shapefile para a tabela CAS */
 %SHPIMPRT(shapefilepath=&filepath.&shapename., 
@@ -185,14 +188,17 @@ run;
 	reduce=1); /* A opção reduce=1 é utilizada para reduzir a complexidade dos dados geográficos importados */
 
 /* 7. Reconecta à sessão CAS */
-options sessref=minhasessao;
-cas minhasessao reconnect;
+options sessref=casconexao;
+cas casconexao reconnect;
 
 /* 8. Filtra e prepara os dados */
 data &outcaslib..&outcasdata._ (copies=0);
 	/* Usamos o segment=1 para filtrar somente polígonos */
 	/* Usamos o density>4 para filtrar a densidade de detalhes nos mapas */
-	set &outcaslib..&outcasdata. (where = (segment=1 and density<4));
+	set &outcaslib..&outcasdata. (where = (segment=1 and density<4
+	/* Caso necessário selecionar somente o estado, modifique a UF, senão, comente a linha de baixo */
+	and sigla_uf='RJ' 
+	));
 run;
 
 /* 9. Remove a tabela temporária e promove a tabela final */
@@ -207,6 +213,10 @@ run;
 </details>
 
 ## 🐢 Passo a passo para aplicar o mapa em GeoJSON
+
+<details>
+
+<summary>Clique aqui para visualizar o passo a passo</summary>
 
 1. Faça o login no SAS® Viya no seu ambiente.
 2. Vá até a ferramenta SAS® Studio - Develop SAS Code.
@@ -262,7 +272,15 @@ run;
 
     ![Passo 14](/images/GJ_15.png)
 
-## 🐢 Passo a passo para aplicar o mapa em Shapefile (em breve)
+</details>
+
+## 🐢 Passo a passo para aplicar o mapa em Shapefile
+
+<details>
+
+<summary>Clique aqui para visualizar o passo a passo (em breve)</summary>
+
+</details>
 
 ## 🔑 Licença
 
