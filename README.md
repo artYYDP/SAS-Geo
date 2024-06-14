@@ -278,7 +278,7 @@ run;
 
 <details>
 
-<summary>Clique aqui para visualizar o passo a passo (em breve)</summary>
+<summary>Clique aqui para visualizar o passo a passo</summary>
 
 1. Antes, certifique-se que colocou os dados do Shapefile em uma CASLIB específica. Geralmente você terá que pedir para um Administrador SAS para fazer isso.
 
