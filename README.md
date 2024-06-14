@@ -14,13 +14,27 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 ```
 </details>
 
-### 👨‍💻 Uso no SAS Visual Analytics (VA)
+## Índice de Conteúdo
+	
+1. [Índice de Conteúdo](#%C3%ADndice-de-conte%C3%BAdo)
+2. [Uso no SAS Visual Analytics (VA)](#-uso-no-sas-visual-analytics-va)
+3. [Códigos](#%EF%B8%8F-c%C3%B3digos)
+	- [GeoJSON](#%EF%B8%8F-geojson)
+	- [Shapefile](#%EF%B8%8F-shapefile)
+4. [Do it yourself (DIY)](#%EF%B8%8F-do-it-yourself-diy)
+	- [Passo a passo para aplicar o mapa em GeoJSON](#-passo-a-passo-para-aplicar-o-mapa-em-geojson)
+	- [Passo a passo para aplicar o mapa em Shapefile](#-passo-a-passo-para-aplicar-o-mapa-em-geojson)
+5. [Licença](#-licen%C3%A7a)
+6. [Autores](#-autores)
+7. [Referência](#-refer%C3%AAncia)
+
+## 👨‍💻 Uso no SAS Visual Analytics (VA)
 
 Esses repositório tem como função ajudar os programadores e analistas SAS a execução do Mapa Coroplético de um maneira simples e rápida, que possa ser replicada em vários projetos.
 
 ## ⚙️ Códigos
 
-Há duas maneiras de se fazer um Mapa Coroplético no SAS VA:
+Há duas maneiras de se fazer um Mapa Coroplético no SAS VA como demonstraremos nesse repositório:
 	
  1. Arquivo [GeoJSON](#%EF%B8%8F-geojson)
  2. Arquivo [Shapefile](#%EF%B8%8F-shapefile)
@@ -212,7 +226,9 @@ run;
 ```
 </details>
 
-## 🐢 Passo a passo para aplicar o mapa em GeoJSON
+## ⌨️ _Do it yourself (DIY)_
+
+### 🐢 Passo a passo para aplicar o mapa em GeoJSON
 
 <details>
 
@@ -274,7 +290,7 @@ run;
 
 </details>
 
-## 🐢 Passo a passo para aplicar o mapa em Shapefile
+### 🐢 Passo a passo para aplicar o mapa em Shapefile
 
 <details>
 
