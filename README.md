@@ -206,7 +206,7 @@ run;
 ```
 </details>
 
-## 🐢 Passo a passo 
+## 🐢 Passo a passo para aplicar o mapa em GeoJSON
 
 1. Faça o login no SAS® Viya no seu ambiente.
 2. Vá até a ferramenta SAS® Studio - Develop SAS Code.
@@ -261,6 +261,8 @@ run;
 14. Se você executou todos os passos corretamente, você deve visualizar o mapa com as regiões plotadas.
 
     ![Passo 14](/images/GJ_15.png)
+
+## 🐢 Passo a passo para aplicar o mapa em Shapefile (em breve)
 
 ## 🔑 Licença
 
