@@ -1,5 +1,5 @@
 /* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE) */
-/* Versão: 1.3 */
+/* Versão: 1.4 */
 /* Status: Finalizada */
 /* Autor: Arthur Diego Pereira */
 /* Contribuição: Geiziane Silva de Oliveira */
@@ -11,7 +11,7 @@
 filename mapa temp;
 
 proc http
-	url="https://github.com/artYYDP/SAS-Geo/raw/ec010701f6d63a71ddcd8fd9fe42307b7c425bed/geojson/Por%20estado/PR-41.geojson"
+	url="https://github.com/artYYDP/SAS-Geo/raw/main/geojson/Estados_UF_BR/PR-41.geojson"
 	method="GET"
 	out=mapa;
 run;
@@ -25,25 +25,25 @@ run;
 
 /* 4. Unir as tabelas */
 data map_data;
-    merge jsonlib.features_properties 
-          jsonlib.features_geometry (keep=ordinal_features ordinal_geometry type);
-    by ordinal_features;
+  merge jsonlib.features_properties
+    jsonlib.features_geometry (keep=ordinal_features ordinal_geometry type);
+  by ordinal_features;
 run;
 
 /* 5. Preparar os dados para o gráfico GMAP */
 data map_data;
-    merge map_data
-          jsonlib.geometry_coordinates;
-    by ordinal_geometry;
+  merge map_data
+    jsonlib.geometry_coordinates;
+  by ordinal_geometry;
 run;
 
 /* 6. Preparar os dados para a Plotagem */
 data plot_data (drop=element1 element2);
-    set map_data;
-    x = element1;
-    y = element2;
-    i = 1;
-    output;
+  set map_data;
+  x = element1;
+  y = element2;
+  i = 1;
+  output;
 run;
 
 /* 7. Adicionar sequencia */
