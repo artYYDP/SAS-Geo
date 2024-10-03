@@ -1,5 +1,5 @@
 /* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE) */
-/* Versão: 1.3 */
+/* Versão: 1.4 */
 /* Status: Finalizada */
 /* Autor: Arthur Diego Pereira */
 /* Contribuição: Geiziane Silva de Oliveira */
