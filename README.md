@@ -37,15 +37,17 @@ Esses repositório tem como função ajudar os programadores e analistas SAS a e
 
 Há duas maneiras de se fazer um Mapa Coroplético no SAS VA como demonstraremos nesse repositório:
 
- 1. Arquivo [GeoJSON](#%EF%B8%8F-geojson)
- 2. Arquivo [Shapefile](#%EF%B8%8F-shapefile)
+1. Arquivo [GeoJSON](#%EF%B8%8F-geojson)
+2. Arquivo [Shapefile](#%EF%B8%8F-shapefile)
 
 Ambos os métodos tem suas particularidades.
 
 > [!IMPORTANT]
 > Tenha certeza que o link esteja correto. Antes de substituir qualquer mapa, certifique-se de criar um novo para testá-lo.
+>
 > [!CAUTION]
 > Não nos responsabilizamos pelo uso indevido do código.
+>
 
 ### 🗺️ GeoJSON
 
@@ -64,7 +66,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 
 ```sas
 /* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE) */
-/* Versão: 1.3 */
+/* Versão: 1.4 */
 /* Status: Finalizada */
 /* Autor: Arthur Diego Pereira */
 /* Contribuição: Geiziane Silva de Oliveira */
@@ -76,7 +78,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 filename mapa temp;
 
 proc http
-	url="https://github.com/artYYDP/SAS-Geo/raw/ec010701f6d63a71ddcd8fd9fe42307b7c425bed/geojson/Por%20estado/PR-41.geojson"
+	url="https://raw.githubusercontent.com/vert-brasil/SAS-Geo/refs/heads/main/geojson/Estados_UF_BR/PR-41.json"
 	method="GET"
 	out=mapa;
 run;
@@ -113,8 +115,8 @@ run;
 
 /* 7. Adicionar sequencia */
 data plot_data;
-set plot_data;
-seqno=_n_;
+	set plot_data;
+	seqno=_n_;
 run;
 
 /* 8. Macro para Carregar Dados no CAS e Promover a Tabela */
@@ -122,7 +124,7 @@ run;
 
 /* 8.1. Deleta a tabela da memória */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
+	droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
 run;
 
 /* 8.2. Carrega tabela no CAS*/
@@ -132,11 +134,11 @@ quit;
 
 /* 8.3. Promove a tabela (disponível para todos os usuário acesso ao servidor) */
 proc casutil;
-promote incaslib = "&outcaslib." casdata = "&casdata."
-outcaslib = "&outcaslib." casout = "&casout.";
+	promote incaslib = "&outcaslib." casdata = "&casdata."
+	outcaslib = "&outcaslib." casout = "&casout.";
 quit;
 %mend sas_load_data_cas;
-%sas_load_data_cas(incaslib=Public,casdata=MAPA,data=geo.regions_shapefile,outcaslib=Public, casout=MAPA)
+%sas_load_data_cas(incaslib=outcaslib.,casdata=&casdata.,data=&data.,outcaslib=outcaslib., casout=&casout.)
 ```
 
 </details>
@@ -184,7 +186,7 @@ options casdatalimit=all;
 
 /* 4. Remove a tabela CAS existente, se houver */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
 run;
 
 /* 5. Examina o conteúdo do Shapefile */
@@ -218,11 +220,11 @@ run;
 
 /* 9. Remove a tabela temporária e promove a tabela final */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
 run;
 
 proc casutil;
-promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
+	promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
 run;
 ```
 
@@ -276,11 +278,11 @@ run;
 
 	![Passo 11.4](/images/GJ_11.png)
 
-12. Ao terminar todos os parâmetros, vá em _Objetos_ e arraste a _Região geográfica_ para a tela gráfica.
+12. Ao terminar todos os parâmetros, vá em *Objetos* e arraste a *Região geográfica* para a tela gráfica.
 
 	![Passo 12](/images/GJ_12.png)
 
-13. Em _Atribuir dados_, selecione em _Geografia_ o mapa que você criou nos passos anteriores.
+13. Em *Atribuir dados*, selecione em *Geografia* o mapa que você criou nos passos anteriores.
 
 	![Passo 13.1](/images/GJ_13.png)
 
@@ -335,11 +337,11 @@ run;
 
 	![Passo 11.4](/images/SH_10.png)
 
-12. Veja que, se aparecer a área corretamente protada no mapa, significa que você seguiu os passos corretamente. Agora, vá em _Objetos_ e arraste a _Região geográfica_ para a tela gráfica.
+12. Veja que, se aparecer a área corretamente protada no mapa, significa que você seguiu os passos corretamente. Agora, vá em *Objetos* e arraste a *Região geográfica* para a tela gráfica.
 
 	![Passo 12](/images/GJ_12.png)
 
-13. Em _Atribuir dados_, selecione em _Geografia_ o mapa que você criou nos passos anteriores.
+13. Em *Atribuir dados*, selecione em *Geografia* o mapa que você criou nos passos anteriores.
 
 	![Passo 13.1](/images/GJ_13.png)
 
@@ -366,6 +368,6 @@ run;
 
 ## 📗 Referência
 
-- [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
-- [GeoJSON](https://geojson.org/)
-- [What is a shapefile?](https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm)
+ - [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
+ - [GeoJSON](https://geojson.org/)
+ - [What is a shapefile?](https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm)
