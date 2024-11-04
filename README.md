@@ -1,9 +1,20 @@
 
-# 🎯 SAS Geo
+# 🎯 SAS Geo | Mapas no SAS Visual Analytics
 
-Repositório de Arquivos destinado a uso do SAS para criação de Mapa Coroplético.
+Repositório de códigos destinado a uso do SAS VA para criação de Mapas, especialmente coropléticos.
 
 Um mapa coroplético é um mapa temático usado para representar dados estatísticos usando a técnica de simbologia de mapeamento de cores.<sub>[[1]](#-refer%C3%AAncia)</sub>
+
+## Índice de Conteúdo
+
+1. [Uso no SAS Visual Analytics (VA)](#-uso-no-sas-visual-analytics-va)
+2. [Códigos](#%EF%B8%8F-c%C3%B3digos)
+	- [GeoJSON](#%EF%B8%8F-geojson)
+	- [Shapefile](#%EF%B8%8F-shapefile)
+3. [Licença](#-licen%C3%A7a)
+4. [Autores](#-autores)
+5. [Agradecimentos](#agradecimentos)
+6. [Referência](#-refer%C3%AAncia)
 
 <details>
 
@@ -15,36 +26,23 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 
 </details>
 
-## Índice de Conteúdo
-
-1. [Índice de Conteúdo](#%C3%ADndice-de-conte%C3%BAdo)
-2. [Uso no SAS Visual Analytics (VA)](#-uso-no-sas-visual-analytics-va)
-3. [Códigos](#%EF%B8%8F-c%C3%B3digos)
-	- [GeoJSON](#%EF%B8%8F-geojson)
-	- [Shapefile](#%EF%B8%8F-shapefile)
-4. [Do it yourself (DIY)](#%EF%B8%8F-do-it-yourself-diy)
-	- [Passo a passo para aplicar o mapa em GeoJSON](#-passo-a-passo-para-aplicar-o-mapa-em-geojson)
-	- [Passo a passo para aplicar o mapa em Shapefile](#-passo-a-passo-para-aplicar-o-mapa-em-geojson)
-5. [Licença](#-licen%C3%A7a)
-6. [Autores](#-autores)
-7. [Referência](#-refer%C3%AAncia)
-
 ## 👨‍💻 Uso no SAS Visual Analytics (VA)
 
-Esses repositório tem como função ajudar os programadores e analistas SAS a execução do Mapa Coroplético de um maneira simples e rápida, que possa ser replicada em vários projetos.
+Esses repositório tem como função ajudar os programadores e analistas SAS a execução dos mapas de uma maneira simples e rápida, que possa ser replicada em vários projetos.
 
 ## ⚙️ Códigos
 
-Há duas maneiras de se fazer um Mapa Coroplético no SAS VA como demonstraremos nesse repositório:
+Há duas maneiras de se fazer o uso de mapa no SAS VA:
 
-1. Arquivo [GeoJSON](#%EF%B8%8F-geojson)
-2. Arquivo [Shapefile](#%EF%B8%8F-shapefile)
+1. Por arquivo [GeoJSON](#%EF%B8%8F-geojson)
+2. Por arquivo [Shapefile](#%EF%B8%8F-shapefile)
 
 Ambos os métodos tem suas particularidades.
 
 > [!IMPORTANT]
 > Tenha certeza que o link esteja correto. Antes de substituir qualquer mapa, certifique-se de criar um novo para testá-lo.
 >
+
 > [!CAUTION]
 > Não nos responsabilizamos pelo uso indevido do código.
 >
@@ -57,91 +55,11 @@ São arquivos mais leves em comparação aos demais, porém são limitados, pois
 
 Fora esse detalhe, o formato GeoJSON é rápido e bem útil quando você tem um ambiente SAS muito limitado a importar ou exportar arquivos. O GeoJSON pode ser facilmente "coletado" via http, desde que o link seja funcional e que não altere o local.
 
-Deixamos uma lista disponível [aqui](/geojson).
+Deixamos um repositório público disponível [aqui](https://github.com/tbrugz/geodata-br).
 
-Abaixo segue um exemplo de uso do código no SAS. O código está todo documentado para facilitar o uso.
+Segue um exemplo de uso do código no SAS. O código está todo documentado para facilitar o uso.
 
-<details>
-<summary>Clique aqui para visualizar o código</summary>
-
-```sas
-/* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE) */
-/* Versão: 1.4 */
-/* Status: Finalizada */
-/* Autor: Arthur Diego Pereira */
-/* Contribuição: Geiziane Silva de Oliveira */
-/*  */
-/* FAVOR NÃO REMOVER OS CRÉDITOS */
-/*  */
-
-/* 1. Fazer o Download do Arquivo GeoJSON do Github */
-filename mapa temp;
-
-proc http
-	url="https://raw.githubusercontent.com/vert-brasil/SAS-Geo/refs/heads/main/geojson/Estados_UF_BR/PR-41.json"
-	method="GET"
-	out=mapa;
-run;
-
-/* 2. Ler o Arquivo GeoJSON usando a Biblioteca JSON */
-libname jsonlib json fileref=mapa;
-
-/* 3. Examinar a Estrutura do GeoJSON */
-proc contents data=jsonlib._all_;
-run;
-
-/* 4. Unir as tabelas */
-data map_data;
-	merge jsonlib.features_properties
-		jsonlib.features_geometry (keep=ordinal_features ordinal_geometry type);
-	by ordinal_features;
-run;
-
-/* 5. Preparar os dados para o gráfico GMAP */
-data map_data;
-	merge map_data
-		jsonlib.geometry_coordinates;
-	by ordinal_geometry;
-run;
-
-/* 6. Preparar os dados para a Plotagem */
-data plot_data (drop=element1 element2);
-	set map_data;
-	x = element1;
-	y = element2;
-	i = 1;
-	output;
-run;
-
-/* 7. Adicionar sequencia */
-data plot_data;
-	set plot_data;
-	seqno=_n_;
-run;
-
-/* 8. Macro para Carregar Dados no CAS e Promover a Tabela */
-%macro sas_load_data_cas(incaslib=,casdata=,data=,outcaslib=, casout=);
-
-/* 8.1. Deleta a tabela da memória */
-proc casutil;
-	droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
-run;
-
-/* 8.2. Carrega tabela no CAS*/
-proc casutil;
-  load data=&data. casout="&casout." outcaslib=&outcaslib. replace;
-quit;
-
-/* 8.3. Promove a tabela (disponível para todos os usuário acesso ao servidor) */
-proc casutil;
-	promote incaslib = "&outcaslib." casdata = "&casdata."
-	outcaslib = "&outcaslib." casout = "&casout.";
-quit;
-%mend sas_load_data_cas;
-%sas_load_data_cas(incaslib=outcaslib.,casdata=&casdata.,data=&data.,outcaslib=outcaslib., casout=&casout.)
-```
-
-</details>
+[Clique aqui](/codes/Código%20do%20Mapa%20Coroplético%20(GeoJSON).sas) para visualizar o código.
 
 ### 🗺️ Shapefile
 
@@ -153,209 +71,11 @@ São arquivos mais pesados em comparação aos demais, pois podem ser extremamen
 
 Porém, exige mais conhecimento de detalhes técnicos sobre como o arquivo funciona.
 
-Deixamos uma lista disponível [aqui](/shapefiles).
+Você pode encontrar os arquivos Shapefile diretamente no site do [IBGE](https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html).
 
 Abaixo segue um exemplo de uso do código no SAS. O código está todo documentado para facilitar o uso.
 
-<details>
-<summary>Clique aqui para visualizar o código</summary>
-
-```sas
-/* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO SHAPEFILE */
-/* Versão: 3.6 */
-/* Status: Finalizado */
-/* Autor: Geiziane Silva de Oliveira */
-/* Contribuição: Arthur Diego Pereira */
-/*  */
-/* FAVOR NÃO REMOVER OS CRÉDITOS */
-/*  */
-
-/* 1. Inicia a sessão CAS */
-cas casconexao sessopts=(caslib=Public locale="pt_BR");
-
-/* 2. Lista todas as CASLIB */
-caslib _all_ list;
-caslib _all_ assign;
-options casdatalimit=all;
-
-/* 3. Define macros para os caminhos e nomes dos arquivos */
-%let filepath=/sasdata/CASLIBS/GEO/BR/; /* Selecione a CASLIB onde você colocou o Shapefile. */
-%let shapename=BR_Municipios_2022.shp; /* Poderíamos selecionar somente o estado aqui, mas conseguimos fazer bom o shapefile do mapa completo também. */
-%let outcaslib=Public; /* Selecione a CASLIB que deseja salvar a sua consulta ao mapa. Nesse caso, deixaremos na Public */
-%let outcasdata=SAS_MAP_RJ; /* Recomendo utilizar a final UF, caso seja em Estado. Nesse caso, faremos do mapa do Rio de Janeiro. */
-
-/* 4. Remove a tabela CAS existente, se houver */
-proc casutil;
-	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
-run;
-
-/* 5. Examina o conteúdo do Shapefile */
-%SHPCNTNT(SHAPEFILEPATH=&filepath.&shapename.); /* Analise o nome da coluna com o identificador único de cidade. Nesse caso é o CD_MUN */
-
-/* Observação: se você estiver usando os dados do IBGE, sempre será através desse identificador 'CD_MUN'. */
-/* Caso você esteja usando outra fonte, certifique-se qual é o identificador base. */
-
-/* 6. Importa o Shapefile para a tabela CAS */
-%SHPIMPRT(shapefilepath=&filepath.&shapename.,
-	id=CD_MUN, /* Coloque aqui o id da etapa anterior (CD_MUN) */
-	outtable=&outcasdata.,
-	cashost=&_CASHOST_.,
-	casport=&_CASPORT_.,
-	caslib='Public',
-	reduce=1); /* A opção reduce=1 é utilizada para reduzir a complexidade dos dados geográficos importados */
-
-/* 7. Reconecta à sessão CAS */
-options sessref=casconexao;
-cas casconexao reconnect;
-
-/* 8. Filtra e prepara os dados */
-data &outcaslib..&outcasdata._ (copies=0);
-	/* Usamos o segment=1 para filtrar somente polígonos */
-	/* Usamos o density>4 para filtrar a densidade de detalhes nos mapas */
-	set &outcaslib..&outcasdata. (where = (segment=1 and density<4
-	/* Caso necessário selecionar somente o estado, modifique a UF, senão, comente a linha de baixo */
-	and sigla_uf='RJ'
-	));
-run;
-
-/* 9. Remove a tabela temporária e promove a tabela final */
-proc casutil;
-	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
-run;
-
-proc casutil;
-	promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
-run;
-```
-
-</details>
-
-## ⌨️ _Do it yourself (DIY)_
-
-### 🐢 Passo a passo para aplicar o mapa em GeoJSON
-
-<details>
-
-<summary>Clique aqui para visualizar o passo a passo</summary>
-
-1. Faça o login no SAS® Viya no seu ambiente.
-2. Vá até a ferramenta SAS® Studio - Develop SAS Code.
-3. Abra um novo SAS Program.
-
-	![Passo 3](/images/GJ_01.png)
-
-4. Copie o código com os parâmetros já definidos e cole no programa.
-
-	![Passo 4](/images/GJ_02.png)
-
-5. Defina o nome da tabela e o local onde será disponibilizada no final do arquivo. No meu caso eu chamarei a tabela de ```MAPA``` na CASLIB ```Public```.
-
-	![Passo 5](/images/GJ_03.png)
-
-6. Salve o seu código.
-
-	![Passo 6](/images/GJ_04.png)
-
-7. Execute todo o seu código clicando em ```run```.
-
-	![Passo 7](/images/GJ_05.png)
-
-8. Depois do código executado sem erros, vá agora até a ferramenta SAS® Visual Analytics - Explorar e visualizar.
-9. Para efeito de teste, usaremos a própria tabela que criamos, mas você pode usar na tabela de negócios. Certifique-se que a sua tabela contenha o código do município de acordo com o IBGE. e com a mesma tipagem de dados (VARCHAR).
-10. Duplique a coluna ```id``` e altere a classificação para Geografia.
-
-	![Passo 10.1](/images/GJ_06.png)
-
-	![Passo 10.2](/images/GJ_07.png)
-
-11. Na nova tela, coloque os mesmos parâmetros na _print_ abaixo.
-
-	![Passo 11.1](/images/GJ_08.png)
-
-	![Passo 11.2](/images/GJ_09.png)
-
-	![Passo 11.3](/images/GJ_10.png)
-
-	![Passo 11.4](/images/GJ_11.png)
-
-12. Ao terminar todos os parâmetros, vá em *Objetos* e arraste a *Região geográfica* para a tela gráfica.
-
-	![Passo 12](/images/GJ_12.png)
-
-13. Em *Atribuir dados*, selecione em *Geografia* o mapa que você criou nos passos anteriores.
-
-	![Passo 13.1](/images/GJ_13.png)
-
-	![Passo 13.2](/images/GJ_14.png)
-
-14. Se você executou todos os passos corretamente, você deve visualizar o mapa com as regiões plotadas.
-
-	![Passo 14](/images/GJ_15.png)
-
-</details>
-
-### 🐢 Passo a passo para aplicar o mapa em Shapefile
-
-<details>
-
-<summary>Clique aqui para visualizar o passo a passo</summary>
-
-1. Antes, certifique-se que colocou os dados do Shapefile em uma CASLIB específica. Geralmente você terá que pedir para um Administrador SAS para fazer isso.
-
-	![Passo 1](/images/SH_01.png)
-
-2. Depois, com o caminho do arquivo em mãos, faça o login no SAS® Viya no seu ambiente.
-3. Vá até a ferramenta SAS® Studio - Develop SAS Code.
-4. Abra um novo SAS Program.
-5. Copie e cole o código e altere os parâmetros de acordo com o que você deseja. Nesse caso, faremos um mapa do Estado do Rio de Janeiro.
-
-	![Passo 5](/images/SH_02.png)
-
-	![Passo 5](/images/SH_03.png)
-
-6. Salve o seu código, caso ache necessário. Depois, execute o código clicando em ```run```.
-
-	![Passo 6](/images/SH_04.png)
-
-7. Depois do código executado sem erros, vá agora até a ferramenta SAS® Visual Analytics - Explorar e visualizar.
-8. Para efeito de teste, usaremos a própria tabela que criamos, mas você pode usar na tabela de negócios. Certifique-se que a sua tabela contenha o código do município de acordo com o IBGE.
-9. Crie um novo relatório e vá em adicionar dados. Selecione a tabela criada final. No nosso caso, usaremos ```SAS_MAP_RJ```.
-
-	![Passo 9](/images/SH_05.png)
-
-10. Duplique a coluna ```CD_MUN``` e altere a classificação para Geografia.
-
-	![Passo 10](/images/SH_06.png)
-
-11. Na nova tela, coloque os mesmos parâmetros na _print_ abaixo.
-
-	![Passo 11.1](/images/SH_07.png)
-
-	![Passo 11.2](/images/SH_08.png)
-
-	![Passo 11.3](/images/SH_09.png)
-
-	![Passo 11.4](/images/SH_10.png)
-
-12. Veja que, se aparecer a área corretamente protada no mapa, significa que você seguiu os passos corretamente. Agora, vá em *Objetos* e arraste a *Região geográfica* para a tela gráfica.
-
-	![Passo 12](/images/GJ_12.png)
-
-13. Em *Atribuir dados*, selecione em *Geografia* o mapa que você criou nos passos anteriores.
-
-	![Passo 13.1](/images/GJ_13.png)
-
-	![Passo 13.2](/images/SH_11.png)
-
-14. Se você executou todos os passos corretamente, você deve visualizar o mapa com as regiões plotadas.
-
-	![Passo 14](/images/SH_12.png)
-
-15. Você pode alterar o _Design_ do mapa como quiser. Abaixo um Exemplo de Como você pode colocar.
-
-	![Passo 15](/images/SH_13.png)
-
-</details>
+[Clique aqui](/codes/Código%20do%20Mapa%20Coroplético%20(Shapefile).sas) para visualizar o código.
 
 ## 🔑 Licença
 
@@ -365,9 +85,15 @@ run;
 
 - [Arthur Diego Pereira](https://www.linkedin.com/in/arthurdiegopereira/)
 - [Geiziane Silva de Oliveira](https://www.linkedin.com/in/geiziane-oliveira-0a5882110/)
+- [Rafhael de Oliveira Martins](https://github.com/rafhaelom)
+
+## Agradecimentos
+
+- [Telmo Brugnara](https://github.com/tbrugz) por disponibilizar publicamente o repositório [Geodata BR - Brasil](https://github.com/tbrugz/geodata-br)
 
 ## 📗 Referência
 
- - [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
  - [GeoJSON](https://geojson.org/)
+ - [Instituto Brasileiro de Geografia e Estatística - IBGE](https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html)
+ - [What is a Choropleth Map and How To Create One](https://venngage.com/blog/choropleth-map/)
  - [What is a shapefile?](https://desktop.arcgis.com/en/arcmap/latest/manage-data/shapefiles/what-is-a-shapefile.htm)
