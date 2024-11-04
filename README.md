@@ -7,14 +7,15 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 
 ## Índice de Conteúdo
 
-1. [Uso no SAS Visual Analytics (VA)](#-uso-no-sas-visual-analytics-va)
-2. [Códigos](#%EF%B8%8F-c%C3%B3digos)
+- [Uso no SAS Visual Analytics (VA)](#-uso-no-sas-visual-analytics-va)
+- [Códigos](#%EF%B8%8F-c%C3%B3digos)
 	- [GeoJSON](#%EF%B8%8F-geojson)
 	- [Shapefile](#%EF%B8%8F-shapefile)
-3. [Licença](#-licen%C3%A7a)
-4. [Autores](#-autores)
-5. [Agradecimentos](#agradecimentos)
-6. [Referência](#-refer%C3%AAncia)
+- [Faça você mesmo](#faça-você-mesmo-diy)
+- [Licença](#-licen%C3%A7a)
+- [Autores](#-autores)
+- [Agradecimentos](#agradecimentos)
+- [Referência](#-refer%C3%AAncia)
 
 <details>
 
@@ -76,6 +77,11 @@ Você pode encontrar os arquivos Shapefile diretamente no site do [IBGE](https:/
 Abaixo segue um exemplo de uso do código no SAS. O código está todo documentado para facilitar o uso.
 
 [Clique aqui](/codes/Código%20do%20Mapa%20Coroplético%20(Shapefile).sas) para visualizar o código.
+
+## Faça Você Mesmo (DIY)
+
+- [Faça você mesmo com código GeoJSON](/diy/geojson.md)
+- [Faça você mesmo com código Shapefile](/diy/shapefile.md)
 
 ## 🔑 Licença
 
