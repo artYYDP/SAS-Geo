@@ -2,10 +2,6 @@
 
 ## 🐢 Passo a passo para aplicar o mapa em Shapefile
 
-<details>
-
-<summary>Clique aqui para visualizar o passo a passo</summary>
-
 1. Antes, certifique-se que colocou os dados do Shapefile em uma CASLIB específica. Geralmente você terá que pedir para um Administrador SAS para fazer isso.
 
 	![Passo 1](/images/SH_01.png)
@@ -60,5 +56,3 @@
 15. Você pode alterar o _Design_ do mapa como quiser. Abaixo um Exemplo de Como você pode colocar.
 
 	![Passo 15](/images/SH_13.png)
-
-</details>

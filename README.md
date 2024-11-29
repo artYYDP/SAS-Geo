@@ -14,7 +14,7 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 - [Faça você mesmo](#faça-você-mesmo-diy)
 - [Licença](#-licen%C3%A7a)
 - [Autores](#-autores)
-- [Agradecimentos](#agradecimentos)
+- [Agradecimentos](#-agradecimentos)
 - [Referência](#-refer%C3%AAncia)
 
 <details>
@@ -91,7 +91,6 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 
 - [Arthur Diego Pereira](https://www.linkedin.com/in/arthurdiegopereira/)
 - [Geiziane Silva de Oliveira](https://www.linkedin.com/in/geiziane-oliveira-0a5882110/)
-- [Rafhael de Oliveira Martins](https://github.com/rafhaelom)
 
 ## 🫂 Agradecimentos
 
