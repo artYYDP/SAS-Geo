@@ -93,7 +93,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 - [Geiziane Silva de Oliveira](https://www.linkedin.com/in/geiziane-oliveira-0a5882110/)
 - [Rafhael de Oliveira Martins](https://github.com/rafhaelom)
 
-## Agradecimentos
+## 🫂 Agradecimentos
 
 - [Telmo Brugnara](https://github.com/tbrugz) por disponibilizar publicamente o repositório [Geodata BR - Brasil](https://github.com/tbrugz/geodata-br)
 
