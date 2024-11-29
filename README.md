@@ -1,5 +1,5 @@
 
-# 🎯 SAS Geo | Mapas no SAS Visual Analytics
+# 🗺️ SAS Geo | Mapas no SAS Visual Analytics
 
 Repositório de códigos destinado a uso do SAS VA para criação de Mapas, especialmente coropléticos.
 
@@ -11,7 +11,7 @@ Um mapa coroplético é um mapa temático usado para representar dados estatíst
 - [Códigos](#%EF%B8%8F-c%C3%B3digos)
 	- [GeoJSON](#%EF%B8%8F-geojson)
 	- [Shapefile](#%EF%B8%8F-shapefile)
-- [Faça você mesmo](#faça-você-mesmo-diy)
+- [Faça você mesmo](#-faça-você-mesmo-diy)
 - [Licença](#-licen%C3%A7a)
 - [Autores](#-autores)
 - [Agradecimentos](#-agradecimentos)
@@ -78,7 +78,7 @@ Abaixo segue um exemplo de uso do código no SAS. O código está todo documenta
 
 [Clique aqui](/codes/Código%20do%20Mapa%20Coroplético%20(Shapefile).sas) para visualizar o código.
 
-## Faça Você Mesmo (DIY)
+## 👐🏼 Faça Você Mesmo (DIY)
 
 - [Faça você mesmo com código GeoJSON](/diy/geojson.md)
 - [Faça você mesmo com código Shapefile](/diy/shapefile.md)
