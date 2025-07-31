@@ -23,7 +23,7 @@ options casdatalimit=all;
 
 /* 4. Remove a tabela CAS existente, se houver */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
 run;
 
 /* 5. Examina o conteúdo do Shapefile */
@@ -54,9 +54,9 @@ run;
 
 /* 9. Remove a tabela temporária e promove a tabela final */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
+	droptable incaslib = "&outcaslib." casdata = "&outcasdata." quiet;
 run;
 
 proc casutil;
-promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
+	promote incaslib = "&outcaslib." casdata = "&outcasdata._" outcaslib= "&outcaslib" casout="&outcasdata";
 run;

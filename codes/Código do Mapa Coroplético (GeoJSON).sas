@@ -1,5 +1,5 @@
 /* CÓDIGO PARA CRIAÇÃO DE UM MAPA COROPLÉTICO NO SAS DE ARQUIVO GEOJSON (ONLINE) */
-/* Versão: 1.4 */
+/* Versão: 1.5 */
 /* Status: Finalizada */
 /* Autor: Arthur Diego Pereira */
 /* Contribuição: Geiziane Silva de Oliveira */
@@ -11,7 +11,7 @@
 filename mapa temp;
 
 proc http
-	url="https://github.com/artYYDP/SAS-Geo/raw/main/geojson/Estados_UF_BR/PR-41.geojson"
+	url="https://raw.githubusercontent.com/tbrugz/geodata-br/refs/heads/master/geojson/geojs-41-mun.json"
 	method="GET"
 	out=mapa;
 run;
@@ -48,8 +48,8 @@ run;
 
 /* 7. Adicionar sequencia */
 data plot_data;
-set plot_data;
-seqno=_n_;
+  set plot_data;
+  seqno=_n_;
 run;
 
 /* 8. Macro para Carregar Dados no CAS e Promover a Tabela */
@@ -57,7 +57,7 @@ run;
 
 /* 8.1. Deleta a tabela da memória */
 proc casutil;
-droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
+  droptable incaslib = "&outcaslib." casdata = "&casdata." quiet;
 run;
 
 /* 8.2. Carrega tabela no CAS*/
@@ -67,8 +67,9 @@ quit;
 
 /* 8.3. Promove a tabela (disponível para todos os usuário acesso ao servidor) */
 proc casutil;
-promote incaslib = "&outcaslib." casdata = "&casdata."
-outcaslib = "&outcaslib." casout = "&casout.";
+  promote incaslib = "&outcaslib." casdata = "&casdata." outcaslib = "&outcaslib." casout = "&casout.";
 quit;
+
 %mend sas_load_data_cas;
+
 %sas_load_data_cas(incaslib=Public,casdata=MAPA,data=plot_mapa,outcaslib=Public, casout=MAPA)
